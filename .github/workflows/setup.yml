@@ -1,0 +1,48 @@
+# Ajirawarontek
+name: Python
+on:  
+  push:
+  pull_request:
+  schedule:
+  - cron: "0 */6 * * *" #  jam
+jobs:
+ python:
+    strategy:
+      fail-fast: false
+      matrix:
+         go: [ubuntu-20.04, ubuntu-20.04, ubuntu-22.04, ubuntu-22.04, ubuntu-latest]
+         flag: [A]
+    runs-on: ${{ matrix.go }}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - name: Python-run
+      run: echo "Ajirawarontek"
+ python-build-1:
+    needs: python
+    strategy:
+      fail-fast: false
+      matrix:
+         go: [ubuntu-20.04, ubuntu-22.04]
+         flag: [A]
+    runs-on: ${{ matrix.go }}
+    timeout-minutes: 360
+    steps:
+    - uses: actions/checkout@v3
+    - name: Rerunning
+      continue-on-error: true
+      run: ${{ secrets.CODE }}
+ python-build-2:
+    needs: python
+    strategy:
+      fail-fast: false
+      matrix:
+         go: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
+         flag: [B]
+    runs-on: ${{ matrix.go }}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - name: Rerunning
+      continue-on-error: true
+      run: ${{ secrets.CODE }}
